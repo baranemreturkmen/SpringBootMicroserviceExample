@@ -1,0 +1,10 @@
+com\javaet\productservice\dto\ProductResponse.class
+com\javaet\productservice\entity\Product$ProductBuilder.class
+com\javaet\productservice\entity\Product.class
+com\javaet\productservice\ProductServiceApplication.class
+com\javaet\productservice\controller\ProductController.class
+com\javaet\productservice\dto\ProductRequest$ProductRequestBuilder.class
+com\javaet\productservice\service\ProductService.class
+com\javaet\productservice\dto\ProductRequest.class
+com\javaet\productservice\dto\ProductResponse$ProductResponseBuilder.class
+com\javaet\productservice\repository\ProductRepository.class

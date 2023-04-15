@@ -1,0 +1,7 @@
+com\javaet\inventoryservice\repository\InventoryRepository.class
+com\javaet\inventoryservice\service\InventoryService.class
+com\javaet\inventoryservice\model\Inventory.class
+com\javaet\inventoryservice\dto\InventoryResponse$InventoryResponseBuilder.class
+com\javaet\inventoryservice\dto\InventoryResponse.class
+com\javaet\inventoryservice\InventoryServiceApplication.class
+com\javaet\inventoryservice\controller\InventoryController.class

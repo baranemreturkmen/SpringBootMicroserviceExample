@@ -1,0 +1,21 @@
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+      #Comment:
+        #As this is a discovery server we don't want to register with eureka
+        #because this is discovery server itself we don't want the server register
+        #itself as client.
+    fetch-registry: false
+      #Comment:
+        #As this is a server we don't need fetch registry server because it's already maintains
+        #it registry locally. Whenever client tries to register to the discovery server the discovery
+        #server will send the local copy of its registry, the client store the registry in memory on
+        #its own storage usually when we are defining the client we'll set the eureka client fetch registy
+        #as true by default.
+
+server:
+  port: 8761
+    #Comment:
+      #Default port where the eureka server will run.
