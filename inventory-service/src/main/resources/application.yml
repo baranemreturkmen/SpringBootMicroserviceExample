@@ -10,6 +10,22 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
+  application:
+    name: inventory-service
 
 server:
-  port: 8082
+  port: 0
+  #Comment:
+    #I don't want to hard code the port number I want to run the service on a random port
+    #At the time starting up spring boot will pick one random free port in your machine
+    #and it will run the inventory service application on that port. No matter how many services
+    #we run it's not a problem, it will try to take a free port and run the application.
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+  #Comment:
+    #As these are eureka clients we have to add the properties of eureka server we have to provide the information
+    #where we can find the eureka server.
