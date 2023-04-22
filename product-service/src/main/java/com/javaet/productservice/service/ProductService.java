@@ -6,7 +6,7 @@ import com.javaet.productservice.entity.Product;
 import com.javaet.productservice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework. stereotype. Service;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
