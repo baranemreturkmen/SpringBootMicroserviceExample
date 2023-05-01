@@ -22,7 +22,7 @@ public class WebClientConfig {
     * the inventory service. In this way order service will find multiple instances of the inventory service
     * It won't be confused and it will just try call this inventory service one after another.*/
     @Bean
-    @LoadBalanced
+    //@LoadBalanced
     public WebClient.Builder webClient() {
 
         return WebClient.builder();

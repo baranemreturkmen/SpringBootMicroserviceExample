@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/inventory-service?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/inventory-service?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
     username: root
     password: root
   jpa:
@@ -14,7 +14,7 @@ spring:
     name: inventory-service
 
 server:
-  port: 0
+  port: 8083
   #Comment:
     #I don't want to hard code the port number I want to run the service on a random port
     #At the time starting up spring boot will pick one random free port in your machine

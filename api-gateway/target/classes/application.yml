@@ -1,0 +1,33 @@
+#API gateway can make a call to this particular url and register itself as a discovery client.
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes[0]: #Product Service Route -> whenever we receive a request with path then apigateway will route this particular request to the product service
+        id: product-service #Usually name of the service which you're defining
+        uri: lb://product-service #api gateway also acts like a load balance, api gateway will also do some client-side load balancing
+             #it'll try to access to the available instance of the product service
+        predicates[0]: Path=/api/product
+      routes[1]:
+        id: order-service
+        uri: lb://order-service/orders
+        predicates[0]: Path=/api/order
+
+#increase the logging level
+logging:
+  level:
+    root: INFO
+    org: #This is the class responsible to define the routes and also identify the routes for the incoming requests
+      springframework:
+        cloud:
+          gateway: TRACE
+            #route:
+              #RouteDefinitionLocator: INFO
+
+#FIXME: Find the error on route! Maybe this configuration is not available on spring cloud gateway side anymore?
