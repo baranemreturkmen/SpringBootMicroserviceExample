@@ -45,7 +45,7 @@ public class OrderService {
         /*allMatch will check whether the isInStock variable is true inside the array or not
         * if all the elements inside the inventoryResponse list contains isInStock it will return
         * true. Even if one of them is false we will get allProductsInStock false*/
-        boolean allProductsInStock = Arrays.stream(Objects.requireNonNull(whoops(skuCodes).block()))
+        boolean allProductsInStock = Arrays.stream(Objects.requireNonNull(getWebClientBuilder(skuCodes).block()))
                 .allMatch(InventoryResponse::isInStock);
 
         if(allProductsInStock){
@@ -63,7 +63,7 @@ public class OrderService {
         return orderLineItems;
     }
 
-    public Mono<InventoryResponse[]> whoops(List<String> skuCodes){
+    public Mono<InventoryResponse[]> getWebClientBuilder(List<String> skuCodes){
         //Call the inventory-service and place order if product is in stock
         /*Mono data type in reactive framework, to able to read the data from the web
          * client response you have to add this body to mono method and inside this

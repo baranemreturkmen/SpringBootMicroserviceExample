@@ -23,7 +23,7 @@ public class InstanceListener implements ApplicationListener<HeartbeatEvent> {
         List<String> skuCodes = new ArrayList<>();
         skuCodes.add("1");
 
-        Mono<InventoryResponse[]> result = orderService.whoops(skuCodes);
+        Mono<InventoryResponse[]> result = orderService.getWebClientBuilder(skuCodes);
         result.subscribe(
                 value -> System.out.println(value),
                 error -> error.printStackTrace()
