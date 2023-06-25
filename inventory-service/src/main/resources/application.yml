@@ -29,3 +29,4 @@ eureka:
   #Comment:
     #As these are eureka clients we have to add the properties of eureka server we have to provide the information
     #where we can find the eureka server.
+    #Github remote branch first commit...
