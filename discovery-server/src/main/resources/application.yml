@@ -14,8 +14,18 @@ eureka:
         #server will send the local copy of its registry, the client store the registry in memory on
         #its own storage usually when we are defining the client we'll set the eureka client fetch registy
         #as true by default.
+  username: ${EUREKA_USERNAME:eureka}
+  password: ${EUREKA_PASSWORD:password}
+  #If there are no env. variables then the default credentials will be picked up.
 
 server:
   port: 8761
     #Comment:
       #Default port where the eureka server will run.
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+#If you want debug config class you must add this setting

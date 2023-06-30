@@ -8,7 +8,7 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://eureka:password@localhost:8761/eureka
 
 server:
   port: 0 #it will take random port available in machine, we need this because default port 8080 which used by api gateway

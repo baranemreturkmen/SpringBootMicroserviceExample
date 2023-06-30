@@ -24,7 +24,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://eureka:password@localhost:8761/eureka
 
   #Comment:
     #As these are eureka clients we have to add the properties of eureka server we have to provide the information
