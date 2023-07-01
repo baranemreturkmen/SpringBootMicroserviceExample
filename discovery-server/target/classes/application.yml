@@ -28,3 +28,4 @@ logging:
     org:
       springframework:
         security: DEBUG
+#If you want debug config class you must add this setting

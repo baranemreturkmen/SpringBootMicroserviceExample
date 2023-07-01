@@ -15,6 +15,9 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity serverHttpSecurity) {
 
+        /*the discovery service doesn't need any extra authentication to be set up. It can be accessed just by adding
+        permit all feature to URI "/eureka/**"*/
+        //TODO: We can't reach http://localhost:8080/eureka/web address due to authorization issue. Above comment not working for me.
         serverHttpSecurity.csrf()
                 .disable()
                 .authorizeExchange(exchange -> exchange.pathMatchers("/eureka/**")

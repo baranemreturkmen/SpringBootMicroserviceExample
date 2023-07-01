@@ -30,3 +30,42 @@ eureka:
 ribbon:
   eureka:
     enabled: true
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      #enabled: true
+      show-details: always
+  #with * actuator will expose all kind of endpoints. By the default it will only expose the health metric endpoints
+  #show-details by default never
+
+#Resilinece4j Properties
+resilience4j:
+  circuitbreaker:
+    instances:
+      inventory:
+        registerHealthIndicator: true #we want to see different kind of states of circuit breaker close, open & half open
+        event-consumer-buffer-size: 10
+        slidingWindowType: COUNT_BASED #After 5 failing requests circuit breaker will try to change from the close to the open state
+        slidingWindowSize: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 5s #How much time we can wait in the open state to change half open state
+        permittedNumberOfCallsInHalfOpenState: 3 #How many calls we have to allow in the half open state to check communication between order and inventory service
+        automaticTransitionFromOpenToHalfOpenEnabled: true #if 3 call fail circuit breaker status will be open
+  timelimiter: #Resilience4J Timeout Properties
+    instances:
+      inventory:
+        timeout-duration: 3s #we want to wait maximum 3 seconds before terminating that call and throwing the timeout exception
+  retry: #Resilience4J Retry Properties
+    instances:
+      inventory:
+        max-attempts: 3
+        wait-duration: 5s #Wait 5 seconds before retrying particular call if we don't receive response in five seconds just retry 3 times
+                          #if after 3 times circuit breaker will handle the actual request flow
