@@ -29,3 +29,10 @@ logging:
       springframework:
         security: DEBUG
 #If you want debug config class you must add this setting
+
+spring:
+  zipkin:
+    base-url: http://localhost:9411
+  sleuth: #Distributed Tracing
+    sampler:
+      probability: 1.0 #We want to send %100 of the request which we are receiving to our system to zipkin.

@@ -25,9 +25,9 @@ public class InventoryService {
     @SneakyThrows
     public List<InventoryResponse> isInStock (List<String> skuCode) {
         //For testing slow connection problems with circuit breaker
-        log.info("Wait Started");
+        /*log.info("Wait Started");
         Thread.sleep(10000);
-        log.info ("Wait Ended");
+        log.info ("Wait Ended");*/
         return inventoryRepository.findBySkuCodeIn(skuCode).stream()
                 .map(inventory ->
                      InventoryResponse.builder().skuCode(inventory.getSkuCode())

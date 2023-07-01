@@ -7,6 +7,8 @@ import com.javaet.orderservice.entity.Order;
 import com.javaet.orderservice.entity.OrderLineItems;
 import com.javaet.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,6 +28,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     //@LoadBalanced
     private final WebClient.Builder webClientBuilder;
+    private final Tracer tracer;
 
     public String placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
@@ -41,18 +44,26 @@ public class OrderService {
                 .map (OrderLineItems::getSkuCode)
                 .toList();
 
-        /*allMatch will check whether the isInStock variable is true inside the array or not
-        * if all the elements inside the inventoryResponse list contains isInStock it will return
-        * true. Even if one of them is false we will get allProductsInStock false*/
-        boolean allProductsInStock = Arrays.stream(Objects.requireNonNull(getWebClientBuilder(skuCodes).block()))
-                .allMatch(InventoryResponse::isInStock);
+        //Create your own span names with sleuth tracer
 
-        if(allProductsInStock){
-            orderRepository.save(order);
-            return "Order Placed Successfully";
-        }
-        else{
-            throw new IllegalArgumentException("Product is not in stock, please try again later!");
+        Span inventoryServiceLookup = tracer.nextSpan().name("InventoryServiceLookup");
+
+        try(Tracer.SpanInScope spanInScope = tracer.withSpan(inventoryServiceLookup.start())){
+            /*allMatch will check whether the isInStock variable is true inside the array or not
+             * if all the elements inside the inventoryResponse list contains isInStock it will return
+             * true. Even if one of them is false we will get allProductsInStock false*/
+            boolean allProductsInStock = Arrays.stream(Objects.requireNonNull(getWebClientBuilder(skuCodes).block()))
+                    .allMatch(InventoryResponse::isInStock);
+
+            if(allProductsInStock){
+                orderRepository.save(order);
+                return "Order Placed Successfully";
+            }
+            else{
+                throw new IllegalArgumentException("Product is not in stock, please try again later!");
+            }
+        } finally{
+            inventoryServiceLookup.end();
         }
     }
     private OrderLineItems mapToDto(OrderLineItemsDto orderLineItemsDto){
