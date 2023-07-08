@@ -19,6 +19,22 @@ spring:
   sleuth: #Distributed Tracing
     sampler:
       probability: 1.0 #We want to send %100 of the request which we are receiving to our system to zipkin.
+  kafka: #Kafka Properties
+    bootstrap-servers: localhost:9092
+    template:
+      default-topic: notificationTopic
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring:
+          json:
+            type:
+              mapping: event:com.javaet.orderservice.event.OrderPlacedEvent
+  #Whenever receive information from order-service to notification-service spring-boot can't understand that how to map
+  #2 different OrderPlacedEvent which has 2 different qualified names. So for that we've to provide mapping type in the
+  #producer side also in the consumer side. token value is some random value I decided to event. Now spring boot understand
+  #what is the json type mapping of OrderPlacedEvent
 
 server:
   port: 0

@@ -5,10 +5,12 @@ import com.javaet.orderservice.dto.OrderLineItemsDto;
 import com.javaet.orderservice.dto.OrderRequest;
 import com.javaet.orderservice.entity.Order;
 import com.javaet.orderservice.entity.OrderLineItems;
+import com.javaet.orderservice.event.OrderPlacedEvent;
 import com.javaet.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -29,6 +31,9 @@ public class OrderService {
     //@LoadBalanced
     private final WebClient.Builder webClientBuilder;
     private final Tracer tracer;
+
+    //Make a call to kafka cluster whenever order is placed.
+    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
 
     public String placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
@@ -57,6 +62,8 @@ public class OrderService {
 
             if(allProductsInStock){
                 orderRepository.save(order);
+                //Send message to kafka topic.
+                kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(order.getOrderNumber()));
                 return "Order Placed Successfully";
             }
             else{

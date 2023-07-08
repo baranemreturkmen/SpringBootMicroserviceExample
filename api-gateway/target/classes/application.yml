@@ -35,10 +35,18 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8181/realms/spring-boot-microservices-realm
-  #Just give the issuer-uri spring-boot will read all the openID configuration which include authorization_endpoint and token_endpoint etc.
+          issuer-uri: http://localhost:8181/realms/spring-boot-microservices-realm #Just give the issuer-uri spring-boot will read all the openID configuration which include authorization_endpoint and token_endpoint etc.
+  zipkin:
+    base-url: http://localhost:9411
+  sleuth: #Distributed Tracing
+    sampler:
+      probability: 1.0 #We want to send %100 of the request which we are receiving to our system to zipkin.
+#Note That!: We're making a call to the inventory service in a different thread because we're using circuit breaker.
+#What circuit breaker essentially do is it will create a new thread from order-service it will make a call inventory service
+#in that new thread. Therefore we can't see inventory-service information in zipkin api gateway information page, it will show inside
+#the order-service information. If you disable circuit breaker you'll see invertory-service information in api gateway information page also.
+#because in this way we're making a call in a single thread without any additional threads so we can trace the request from start to the end.
 
-#spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8181/realms/spring-boot-microservices-realm
 #increase the logging level
 logging:
   level:
