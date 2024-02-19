@@ -1,0 +1,52 @@
+#Jdk yerine jre kullanıyoruz ve alias olarakta builder ismini veriyoruz.
+FROM eclipse-temurin:17.0.4.1_1-jre as builder
+#created work directory as extracted
+WORKDIR extracted
+#creating and adding jar file inside the target folder into the container and we're calling this  app.jar
+ADD target/*.jar app.jar
+#After java9 or 10 java supports no extracting different layers from the jar files.
+#If you look at our spring boot application it's divided into different layers. If you want to see this
+#unzip -l api-gateway-1.0-SNAPSHOT.jar run this command on cmd
+#Aşağıdaki bu komutu run ettiğim zaman spring-boot.jar'dan aşağıdaki 4 layer'ı extract edecek ve bu 4 layer'ı/dosyayı
+#extracted dosyası altında depolayacak. extract komutunu da bundan dolayı kullandık zaten extract etsin ve benim
+#söylediğim extracted dosyası altında bu layerları depolasın. Burası docker build'in ilk kısmı.
+RUN java -Djarmode=layertools -jar app.jar extract
+
+FROM eclipse-temurin:17.0.4.1_1-jre
+WORKDIR application
+#maven dependencylerim burada
+COPY --from=builder extracted/dependencies/ ./
+#spring-boot-loader'dan kasıt jar, war files ile alakalı
+#https://docs.spring.io/spring-boot/docs/2.1.13.RELEASE/api/org/springframework/boot/loader/package-summary.html#:~:text=springframework.-,boot.,and%20are%20executed%20without%20unpacking.
+COPY --from=builder extracted/spring-boot-loader/ ./
+COPY --from=builder extracted/snapshot-dependencies/ ./
+#Tüm source codelar burada olacak - src->main
+COPY --from=builder extracted/application/ ./
+#Yukarıdaki tüm copy ile ayırdığım yerler benim different layerlarım. copy ile build'in ilk kısmında jre'ye vermiş
+#olduğum alias'ı ve working directory olan extracted'ı kullanıyorum. Burası build'in ikinci kısmı oluyor
+#İlk kısımda working directory olarak belirlediğim extracted'a kaydettiğim dosyaları build alıp application'a atıyorum
+#Peki bunu en başta neden yapmadım? İlk buildde. İlk build'de ADD target/*.jar app.jar komutu ile jar dosyamı
+#buluyorum. RUN java -Djarmode=layertools jar app.jar extract komutu ile WORKDIR komutu ile belirlediğim dosyanın
+#altına layerlarımı koyuyorum. Build'in ikinci kısmında artık ayırdığım bu layerları extracted dosyası altında
+#istediğim dizinlere yerleştiriyorum ve son olarak application dosyasını yani ikinci build için
+#belirlediğim dosyası extracted altına yerleştiriyorum. Son copy'yi yapıyorum çünkü ilk build'den sonra bu build
+#dosyası defalarca kez build olabilir önceki build'de yaptığım işleri hem kaybetmemiş oluyorum hem de dosya dizinlerini
+#ayarlıyorum build'in ilk kısmında yani yapıyı şöyle düşünebilirsin.
+#Birinci build ilk kısım extracted oluştu
+#Birinci build ikinci kısım extracted dizinler ayarlandı bu dizinler application atıldı application'da extracted altına atıldı.
+#Böylece ben ikici build başlarsa eğer birinci build'in ikinci kısmında yaptığım işleri bu şekilde kaybetmemiş oldum
+#oldukça zekice.
+#Dockerfile'da ismi geçen multi-stage'den kasıt bu. Birden fazla stage var. Dockerfile çalıştıktan sonra loga bakarsak eğer bunu görürüz.
+# => [stage-1 3/6] COPY --from=builder extracted/dependencies/ ./                                                                                                       0.1s
+# => [stage-1 4/6] COPY --from=builder extracted/spring-boot-loader/ ./                                                                                                 0.0s
+# => [stage-1 5/6] COPY --from=builder extracted/snapshot-dependencies/ ./                                                                                              0.0s
+# => [stage-1 6/6] COPY --from=builder extracted/application/ ./
+#extracted altında dizinlere ayırdığım herşey bir stage aslında.
+#expose ediyorum 8080 portu ile
+EXPOSE 8080
+#aşağıdaki komutu çalıştırıyorum.
+ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
+
+#Yukarıda yaptığım işler docker file build etmenin iyi bir yöntemi. Yeni image apigateway-layered 310MB
+#docker build -t apigateway-layered -f Dockerfile_layered .
+#-f tag'i ile çalıştırmak istediğim dockerfile'i söylüyorum. Bunu vermezsem eğer default olan Dockerfile'i çalıştıracaktır.

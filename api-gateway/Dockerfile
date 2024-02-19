@@ -12,3 +12,8 @@ ENTRYPOINT ["java","-jar","/app.jar"]
 #. -> means that we want to give present folder for the image.
 #docker images -> localde ki tüm imageleramı verir.
 #apigateway-dockerfile 551MB. Bu iyi birşey değil bunu improve etmemiz lazım.
+#1-Jdk kullanıyoruz Jre yerine bu hata.
+#2-En ufak bir versiyon değişikliğinde docker file neresini  değiştiğini anlayamayacak ve tüm dosyaları baştan aşağıya tarayacak.
+#Bunu engelleyebiliriz sadece dependencies'in olduğu dosyayı taramasını sağlayabiliriz.
+#Docker file build aşamasını improve etmek için docker'ın multi-stage builds özelliğinden faydalanabiliriz.
+#Bu yapıyı daha iyi anlayabilmek için Dockerfile_layered'ı oluşturdum.
