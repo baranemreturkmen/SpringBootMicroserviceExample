@@ -2,7 +2,7 @@ package com.javaet.inventoryservice.controller;
 
 import com.javaet.inventoryservice.dto.InventoryResponse;
 import com.javaet.inventoryservice.service.InventoryService;
-import lombok. RequiredArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

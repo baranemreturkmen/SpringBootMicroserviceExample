@@ -1,0 +1,10 @@
+server:
+  port: 8761
+
+#Bu ayar?n ayn?s? application.yml'da var fakat http://localhost:9411 olarak geçiyor.
+#Ama ?uan localde de?il 'zipkin' container'?nda çal???yoruz docker-compose.yml'da
+#böyle bir container'?m var. Bundan dolay? container name'i verdik burada ve compose.yml'da ayr? bir
+#docker profile olu?turduk discovery-server için.
+management:
+  zipkin:
+    base-url: http://zipkin:9411

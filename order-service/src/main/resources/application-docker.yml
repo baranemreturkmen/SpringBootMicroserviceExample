@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5431/order_service
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: time.sleep
+  kafka:
+    bootstrap-servers:
+      #We're communicating one docker container to another(Order service running in docker container and kafka running in another docker container.)
+      broker: 29092
+
+
+management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka

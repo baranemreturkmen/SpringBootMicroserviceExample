@@ -52,6 +52,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.30</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -67,6 +72,28 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <from>
+                        <image>eclipse-temurin:17.0.4.1_1-jre</image>
+                    </from>
+                    <!--Farklı mikroservislerim olduğu için her birinin artifactId'sini veriyorum-->
+                    <!--baranemreturkmen docker hub'a image'larımı taşırken verdiğim isimlendirme-->
+                    <!--Örneğin baranemreturkmen/notification-service istediğin ismi verebilir misin bilmiyorum ben kullanıcı adımı verdim.-->
+                    <to><image>registry.hub.docker.com/baranemreturkmen/${project.artifactId}</image></to>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
         </plugins>
